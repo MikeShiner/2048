@@ -30,11 +30,11 @@ export class Game2048 {
         console.log("performing action..", Direction[direction]);
 
         var rowData: Tile[][] = this.grid.GetRowDataByDirection(direction);
-
+        var eventTrigger = false;
         for (let row = 0; row < rowData.length; row++) {
-            var rowEvents = this.calculateRowEvents(rowData[row]);
+            let gameEvents: TileUpdateEvent[] = this.calculateRowEvents(rowData[row]);
 
-            rowEvents.forEach((event: any) => {
+            gameEvents.forEach((event: any) => {
                 if (event instanceof TileMoveEvent) {
                     console.log("Move event!");
                     this.grid.UpdateTileByPos(event.NewPosition, event.Value)
@@ -42,9 +42,17 @@ export class Game2048 {
                 }
                 if (event instanceof TileMergeEvent) {
                     console.log("Merge event!");
+                    this.grid.UpdateTileByPos(event.TilePosToMergeWith, event.NewValue)
+                    this.grid.RemoveTileByPos(event.Position)
                 }
             });
-            console.log(rowEvents);
+            console.log(gameEvents);
+            if (gameEvents.length > 0) {
+                eventTrigger = true;
+            }
+        }
+        if (eventTrigger) {
+            this.insertRandomTile();
         }
         this.grid.printBoard();
     }
