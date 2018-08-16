@@ -20,20 +20,19 @@ export class Grid {
     }
 
     UpdateTileByPos(pos: TilePosition, newValue: number) {
-        this.cells[pos.x][pos.y] = newValue;
+        this.cells[pos.x][pos.y] = newValue
     }
 
     RemoveTileByPos(pos: TilePosition): void {
-        this.cells[pos.x][pos.y] = 0;
+        this.cells[pos.x][pos.y] = 0
     }
 
     getAvailableTiles(): Array<TilePosition> {
         let arr: Array<TilePosition> = [];
         for (let x = 0; x < this.size; x++) {
             for (let y = 0; y < this.size; y++) {
-                if (this.cells[x][y] == 0) {
+                if (this.cells[x][y] == 0)
                     arr.push(new TilePosition(x, y))
-                }
             }
         }
         return arr

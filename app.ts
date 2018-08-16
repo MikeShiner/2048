@@ -1,13 +1,13 @@
-import { Game2048 } from './Game2048';
-import * as Mousetrap from 'mousetrap';
-import { Direction } from './entities/Direction.enum';
-const stdin = process.openStdin();
+import { Game2048 } from './Game2048'
+import * as Mousetrap from 'mousetrap'
+import { Direction } from './entities/Direction.enum'
 
-var game: Game2048 = new Game2048(4);
+const stdin = process.openStdin()
+var game: Game2048 = new Game2048(4)
 
 console.log("Enter Direction: (l,r,u,d)")
-stdin.addListener("data", function (input) {
-    let direction: Direction | null;
+stdin.addListener('data', function (input) {
+    let direction: Direction | null
 
     switch (input.toString().trim()) {
         case "l":
@@ -28,6 +28,6 @@ stdin.addListener("data", function (input) {
     if (direction != null) {
         game.action(direction)
     } else {
-        console.log("Invalid direction, please input l, r, u, d")
+        console.log('Invalid direction, please input l, r, u, d')
     }
-});
+})
