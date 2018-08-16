@@ -3,6 +3,7 @@ import { Tile } from './entities/Tile';
 import { TilePosition } from './entities/TilePosition';
 import { Utils } from './Utils';
 import { Direction } from './entities/Direction.enum';
+import { TileMoveEvent, TileUpdateEvent, TileMergeEvent } from './entities/Events';
 
 export class Game2048 {
 
@@ -27,5 +28,64 @@ export class Game2048 {
 
     action(direction: Direction) {
         console.log("performing action..", Direction[direction]);
+
+        var rowData: Tile[][] = this.grid.GetRowDataByDirection(direction);
+
+        for (let row = 0; row < rowData.length; row++) {
+            var rowEvents = this.calculateRowEvents(rowData[row]);
+
+            rowEvents.forEach((event: any) => {
+                if (event instanceof TileMoveEvent) {
+                    console.log("Move event!");
+                    this.grid.UpdateTileByPos(event.NewPosition, event.Value)
+                    this.grid.RemoveTileByPos(event.Position)
+                }
+                if (event instanceof TileMergeEvent) {
+                    console.log("Merge event!");
+                }
+            });
+            console.log(rowEvents);
+        }
+        this.grid.printBoard();
+    }
+
+    private calculateRowEvents(tiles: Tile[]) {
+        var valueToMerge = tiles[0].value
+        var availableCellIndex = tiles[0].value > 0 ? 1 : 0
+        var eventList = <TileUpdateEvent[]>[];
+        var moveEventBeforeMerge: TileMoveEvent | null = null;
+
+        for (var colIndex = 1; colIndex < tiles.length; colIndex++) {
+            var current = tiles[colIndex].value;
+
+            if (current == 0) {
+                // Skip zeros
+                continue;
+            }
+
+            if (valueToMerge != current) {
+                if (colIndex > availableCellIndex) {
+                    // Move case
+                    moveEventBeforeMerge = new TileMoveEvent(tiles[colIndex], tiles[availableCellIndex], current, false);
+                    eventList.push(moveEventBeforeMerge);
+                }
+                valueToMerge = current;
+                availableCellIndex++;
+                continue;
+            }
+
+            // Merge case (accumulatedValue != current)
+            // If we do merge after move then
+            if (moveEventBeforeMerge != null) {
+                // moveEventBeforeMerge.MergedValue = -1; // ????
+            } else {
+                // Fake move event just for deletion
+                eventList.push(new TileMoveEvent(tiles[availableCellIndex - 1], tiles[availableCellIndex - 1], current, true));
+            }
+            eventList.push(new TileMergeEvent(tiles[colIndex], tiles[availableCellIndex - 1], current + valueToMerge));
+
+            valueToMerge = 0;  // Don't allow all merges in one turn
+        }
+        return eventList;
     }
 }
