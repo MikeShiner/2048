@@ -14,6 +14,8 @@ export class Game2048 {
         this.grid = new Grid(size)
         this.insertRandomTile()
         this.grid.printBoard()
+
+
     }
 
     insertRandomTile(): Tile {
