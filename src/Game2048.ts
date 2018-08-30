@@ -9,13 +9,17 @@ export class Game2048 {
 
     private grid: Grid
     private utils: Utils = new Utils()
+    private score: number = 0
 
-    constructor(private size: number) {
-        this.grid = new Grid(size)
+
+    constructor(private stage: PIXI.Container, private size: number) {
+        let gridCont: PIXI.Container = new PIXI.Container()
+        gridCont.y = 100
+        gridCont.x = 50
+        this.stage.addChild(gridCont)
+        this.grid = new Grid(gridCont, size)
         this.insertRandomTile()
         this.grid.printBoard()
-
-
     }
 
     insertRandomTile(): Tile {

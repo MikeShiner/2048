@@ -4,40 +4,42 @@ import { Direction } from './entities/Direction.enum'
 import * as PIXI from 'pixi.js';
 
 function initGame() {
-    const renderer = PIXI.autoDetectRenderer(512, 512)
-    console.log(document)
-    document.body.appendChild(renderer.view)
-    var game: Game2048 = new Game2048(4)
+    const canvas: PIXI.Application = new PIXI.Application({
+        width: 500,
+        height: 550,
+        antialias: true,    // default: false
+        transparent: false, // default: false
+        resolution: 1       // default: 1
+    })
+    canvas.renderer.backgroundColor = 0xCCCCCC
+    document.body.appendChild(canvas.view)
+    var game: Game2048 = new Game2048(canvas.stage, 4)
 
-    // Console Controls!
-
-    // const stdin = process.openStdin()
-    // console.log("Enter Direction: (l,r,u,d)")
-    // stdin.addListener('data', function (input) {
-    //     let direction: Direction | null
-
-    //     switch (input.toString().trim()) {
-    //         case "l":
-    //             direction = Direction.LEFT
-    //             break
-    //         case "r":
-    //             direction = Direction.RIGHT
-    //             break
-    //         case "u":
-    //             direction = Direction.UP
-    //             break
-    //         case "d":
-    //             direction = Direction.DOWN
-    //             break
-    //         default:
-    //             direction = null
-    //     }
-    //     if (direction != null) {
-    //         game.action(direction)
-    //     } else {
-    //         console.log('Invalid direction, please input l, r, u, d')
-    //     }
-    // })
+    document.addEventListener('keydown', (e) => {
+        let direction: Direction | null
+        console.log(e.keyCode)
+        switch (e.keyCode) {
+            case 37:
+                direction = Direction.LEFT
+                break
+            case 39:
+                direction = Direction.RIGHT
+                break
+            case 38:
+                direction = Direction.UP
+                break
+            case 40:
+                direction = Direction.DOWN
+                break
+            default:
+                direction = null
+        }
+        if (direction != null) {
+            game.action(direction)
+        } else {
+            console.log('Invalid direction, please press Left/Right/Up/Down')
+        }
+    })
 }
 
 initGame();
