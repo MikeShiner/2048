@@ -11,6 +11,7 @@ function initGame() {
         transparent: false, // default: false
         resolution: 1       // default: 1
     })
+    
     canvas.renderer.backgroundColor = 0xCCCCCC
     document.body.appendChild(canvas.view)
     var game: Game2048 = new Game2048(canvas.stage, 4)
