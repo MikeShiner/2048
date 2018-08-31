@@ -99,7 +99,7 @@ export class Grid {
                 let val: number = this.cells[x][y]
                 let colour = (<any>Config.colours)[val == 0 ? '0' : (val).toString()]
                 let box = new PIXI.Graphics()
-                box.lineStyle(2, 0x333, 1)
+                box.lineStyle(2, 0xcccccc, 1)
                 box.beginFill(colour, 1)
                 box.drawRoundedRect(100 * y, 100 * x, 100, 100, 10)
                 box.endFill()

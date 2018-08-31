@@ -10,8 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/hammerjs": "^2.0.35",
     "@types/mousetrap": "^1.6.0",
     "@types/pixi.js": "^4.8.0",
+    "hammerjs": "^2.0.8",
     "i": "^0.3.6",
     "mousetrap": "^1.6.2",
     "pixi.js": "^4.8.1",

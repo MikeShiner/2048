@@ -11,25 +11,47 @@ export class Game2048 {
     private utils: Utils = new Utils()
     private score: number = 0
 
+    private scoreContainer: PIXI.Text;
+
 
     constructor(private stage: PIXI.Container, private size: number) {
         let gridCont: PIXI.Container = new PIXI.Container()
         gridCont.y = 100
         gridCont.x = 50
         this.stage.addChild(gridCont)
+
+        let title = new PIXI.Text('2048')
+        title.x = 50
+        title.y = 50
+        this.stage.addChild(title)
+
+        this.scoreContainer = new PIXI.Text('Score: ' + this.score)
+        this.scoreContainer.x = 300
+        this.scoreContainer.y = 50
+        this.stage.addChild(this.scoreContainer)
+
         this.grid = new Grid(gridCont, size)
+        
         this.insertRandomTile()
         this.grid.printBoard()
     }
 
     insertRandomTile(): Tile {
         let freeSpaces: Array<TilePosition> = this.grid.getAvailableTiles()
+        if (freeSpaces.length == 0){
+            console.log("Game over!")
+        }
         let chosenTile: TilePosition = freeSpaces[this.utils.getRandomNumber(freeSpaces.length)]
         var tile = new Tile(chosenTile.x, chosenTile.y, this.utils.getRandomNumber(1) == 0 ? 2 : 4)
 
         console.log('Inserting tile(' + tile.value + ') into space: ' + chosenTile.toString())
         this.grid.insertTileByPos(tile)
         return tile
+    }
+
+    updateScore(increment: number){
+        this.score = this.score + increment
+        this.scoreContainer.text = "Score: " + this.score
     }
 
     action(direction: Direction) {
@@ -51,11 +73,12 @@ export class Game2048 {
                     console.log("Merge event!");
                     this.grid.UpdateTileByPos(event.TilePosToMergeWith, event.NewValue)
                     this.grid.RemoveTileByPos(event.Position)
+                    this.updateScore(event.NewValue);
                 }
             });
-            console.log(gameEvents);
             if (gameEvents.length > 0) eventTrigger = true
         }
+
         if (eventTrigger) this.insertRandomTile()
         this.grid.printBoard()
     }
@@ -82,10 +105,7 @@ export class Game2048 {
                 continue
             }
 
-            if (moveEventBeforeMerge != null) {
-                // moveEventBeforeMerge.MergedValue = -1; // ????
-            } else {
-                // Mark for delete
+            if (moveEventBeforeMerge == null) {
                 eventList.push(new TileMoveEvent(tiles[availableCellIndex - 1], tiles[availableCellIndex - 1], current, true))
             }
             eventList.push(new TileMergeEvent(tiles[colIndex], tiles[availableCellIndex - 1], current + valueToMerge))
